@@ -11,29 +11,34 @@ class Stock(BaseModel):
         conn = DatabaseConnection().get_connection()
         cursor = conn.cursor()
 
-        cursor.execute("CREATE TABLE IF NOT EXISTS stock (id INTEGER PRIMARY KEY AUTOINCREMENT,product_id INTEGER,quantity INTEGER,FOREIGN KEY(product_id) REFERENCES products(id))")
+        cursor.execute("CREATE TABLE IF NOT EXISTS stocks (id INTEGER PRIMARY KEY AUTOINCREMENT,product_id INTEGER,quantity INTEGER,FOREIGN KEY(product_id) REFERENCES products(id))")
 
-        cursor.execute("SELECT quantity FROM stock WHERE product_id = ?", (self.product_id,))
+        cursor.execute("SELECT quantity FROM stocks WHERE product_id = ?", (self.product_id,))
         row = cursor.fetchone()
 
         if row:
             new_qty = row[0] + self.quantity
-            cursor.execute("UPDATE stock SET quantity = ? WHERE product_id = ?", (new_qty, self.product_id))
+            cursor.execute("UPDATE stocks SET quantity = ? WHERE product_id = ?", (new_qty, self.product_id))
         else:
-            cursor.execute("INSERT INTO stock (product_id, quantity) VALUES (?, ?)", (self.product_id, self.quantity))
+            cursor.execute("INSERT INTO stocks (product_id, quantity) VALUES (?, ?)", (self.product_id, self.quantity))
 
         conn.commit()
 
-    # def reduce(self):
-    #     conn = DatabaseConnection().get_connection()
-    #     cursor = conn.cursor()
-    #
-    #     cursor.execute("SELECT quantity FROM stock WHERE product_id = ?", (self.product_id,))
-    #     row = cursor.fetchone()
-    #
-    #     if row and row[0] >= self.quantity:
-    #         new_qty = row[0] - selectquantity
-    #         cursor.execute("UPDATE stock SET quantity = ? WHERE product_id = ?", (new_qty, self.product_id))
-    #         conn.commit()
-    #         return True
-    #     return False
+    @staticmethod
+    def delete_by_product_id(product_id:int):
+        conn = DatabaseConnection().get_connection()
+        conn.execute("DELETE FROM stocks WHERE product_id = ?", (product_id,))
+        conn.commit()
+
+    @staticmethod
+    def find_by_product_id(product_id: int):
+        conn = DatabaseConnection().get_connection()
+        cursor = conn.execute("SELECT * FROM stocks WHERE product_id = ?", (product_id,))
+        row = cursor.fetchone()
+        conn.commit()
+        if row:
+            # row = (id, product_id, quantity)
+            stock = Stock(product_id=row[1], quantity=row[2])
+            stock.id = row[0]
+            return stock
+        return None

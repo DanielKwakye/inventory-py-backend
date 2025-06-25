@@ -16,8 +16,6 @@ class Inventory(Observable):
         return sort_strategy.sort(products)
 
 
-
-
     def find_product_by_id(self, product_id: int):
         product = Product.find_by_id(table_id=product_id)
         self.notify_observers(f"Product returned: {product.title}")

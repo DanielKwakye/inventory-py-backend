@@ -11,7 +11,4 @@
 ` $pip freeze > requirements.txt`
 
 ### To install new package
-
 `$pip install [python-multipart]`
-
-

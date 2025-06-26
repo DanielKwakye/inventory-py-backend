@@ -7,6 +7,9 @@
 ### run server
 `$uvicorn main:app --reload`
 
+### for deployment server the start cmd is
+``
+
 ### To add new installations to requirements.txt
 ` $pip freeze > requirements.txt`
 

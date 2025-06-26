@@ -17,8 +17,8 @@ class Stock(BaseModel):
         row = cursor.fetchone()
 
         if row:
-            new_qty = row[0] + self.quantity
-            cursor.execute("UPDATE stocks SET quantity = ? WHERE product_id = ?", (new_qty, self.product_id))
+            # new_qty = row[0] + self.quantity
+            cursor.execute("UPDATE stocks SET quantity = ? WHERE product_id = ?", (self.quantity, self.product_id))
         else:
             cursor.execute("INSERT INTO stocks (product_id, quantity) VALUES (?, ?)", (self.product_id, self.quantity))
 

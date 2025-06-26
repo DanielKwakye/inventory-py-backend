@@ -102,7 +102,7 @@ class Product(BaseModel):
                 discount_perc = ?
             WHERE id = ?
             """,
-            (title, cost_price, selling_price, tax_value, discount_perc, self.id)
+            (title, cost_price, selling_price, tax_value, discount_perc, self.id,)
         )
         conn.commit()
 

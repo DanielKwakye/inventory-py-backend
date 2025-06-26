@@ -112,10 +112,11 @@ async def delete_product(product_id:int, request: Request):
 # Update a product's stock ( product quantity )
 @router.put("/update-stock/{product_id}")
 async def update_stock(product_id: int, request: Request):
-    user_role, quantity = request.get("user_role"), request.get("quantity")
+    data = await request.json()
+    user_role, quantity =  data["user_role"], float(data["quantity"])
     inventory_proxy.role = user_role
+    print("customLogV2:=", user_role, quantity)
     cmd = UpdateStockCommand(inventory_proxy=inventory_proxy, product_id=product_id, new_quantity=quantity)
-    cmd.execute()
     result = cmd.execute()
     return JSONResponse(content=result)
 
